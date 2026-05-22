@@ -47,10 +47,23 @@ async function loadHome() {
 }
 
 function renderStats(status) {
+  const fees = status.fees || {};
   $('#stats').innerHTML = `
     <div class="card">
       <div class="muted">Network Height</div>
       <div class="big">${status.tipHeight.toLocaleString()}</div>
+    </div>
+    <div class="card">
+      <div class="muted">Fast Fee</div>
+      <div class="big">${fees.fastestFee || '—'} sat/vB</div>
+    </div>
+    <div class="card">
+      <div class="muted">Medium Fee</div>
+      <div class="big">${fees.halfHourFee || '—'} sat/vB</div>
+    </div>
+    <div class="card">
+      <div class="muted">Economy</div>
+      <div class="big">${fees.economyFee || '—'} sat/vB</div>
     </div>`;
 }
 

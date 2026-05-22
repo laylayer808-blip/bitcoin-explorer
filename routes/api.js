@@ -51,8 +51,11 @@ router.get('/search/:query', async (req, res, next) => {
 
 router.get('/status', async (req, res, next) => {
   try {
-    const height = await btc.getTipHeight();
-    res.json({ tipHeight: height });
+    const [height, fees] = await Promise.all([
+      btc.getTipHeight(),
+      btc.getFeeRecommendations()
+    ]);
+    res.json({ tipHeight: height, fees });
   } catch (e) { next(e); }
 });
 

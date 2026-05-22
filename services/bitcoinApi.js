@@ -2,6 +2,7 @@ const fetch = require('node-fetch');
 const cache = require('../utils/cache');
 
 const BLOCKSTREAM = 'https://blockstream.info/api';
+const MEMPOOL = 'https://mempool.space/api';
 
 async function safeFetch(url, ttl = 30) {
   const cached = cache.get(url);
@@ -134,10 +135,15 @@ async function getTipHeight() {
   return parseInt(h);
 }
 
+async function getFeeRecommendations() {
+  return await safeFetch(`${MEMPOOL}/v1/fees/recommended`, 60);
+}
+
 module.exports = {
   getLatestBlocks,
   getBlock,
   getTransaction,
   getAddress,
-  getTipHeight
+  getTipHeight,
+  getFeeRecommendations
 };
