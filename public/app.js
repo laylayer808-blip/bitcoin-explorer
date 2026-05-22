@@ -50,19 +50,15 @@ function renderStats(status) {
   const fees = status.fees || {};
   $('#stats').innerHTML = `
     <div class="card">
-      <div class="muted">Network Height</div>
+      <div class="muted">Высота сети</div>
       <div class="big">${status.tipHeight.toLocaleString()}</div>
     </div>
     <div class="card">
-      <div class="muted">Fast Fee</div>
+      <div class="muted">Быстрая комиссия</div>
       <div class="big">${fees.fastestFee || '—'} sat/vB</div>
     </div>
     <div class="card">
-      <div class="muted">Medium Fee</div>
-      <div class="big">${fees.halfHourFee || '—'} sat/vB</div>
-    </div>
-    <div class="card">
-      <div class="muted">Economy</div>
+      <div class="muted">Эконом</div>
       <div class="big">${fees.economyFee || '—'} sat/vB</div>
     </div>`;
 }
@@ -72,8 +68,8 @@ function renderBlocks(blocks) {
     <div class="card block-card" data-hash="${b.hash}">
       <div class="height">#${b.height.toLocaleString()}</div>
       <div class="muted">${formatTime(b.timestamp)}</div>
-      <div>Transactions: ${b.txCount}</div>
-      <div>Size: ${formatSize(b.size)}</div>
+      <div>Транзакций: ${b.txCount}</div>
+      <div>Размер: ${(b.size / 1024).toFixed(1)} КБ</div>
       <div class="hash">${shortHash(b.hash)}</div>
     </div>`).join('');
 
@@ -84,7 +80,7 @@ function renderBlocks(blocks) {
 
 async function loadBlock(hashOrHeight) {
   showView('block-view');
-  $('#block-view').innerHTML = '<div class="card">Loading...</div>';
+  $('#block-view').innerHTML = '<div class="card">Загрузка...</div>';
   try {
     const block = await api('/block/' + hashOrHeight);
     renderBlockDetail(block);
@@ -100,35 +96,35 @@ function renderBlockDetail(b) {
     </div>`).join('');
 
   $('#block-view').innerHTML = `
-    <span class="back-btn" onclick="loadHome()">&larr; Back</span>
+    <span class="back-btn" onclick="loadHome()">&larr; Назад</span>
     <div class="detail-card">
-      <h2>Block #${b.height.toLocaleString()}</h2>
+      <h2>Блок #${b.height.toLocaleString()}</h2>
       <div class="detail-row">
-        <span class="label">Hash</span>
+        <span class="label">Хеш</span>
         <span class="value">${b.hash}</span>
       </div>
       <div class="detail-row">
-        <span class="label">Timestamp</span>
+        <span class="label">Время</span>
         <span class="value">${formatTime(b.timestamp)}</span>
       </div>
       <div class="detail-row">
-        <span class="label">Transactions</span>
+        <span class="label">Транзакций</span>
         <span class="value">${b.txCount}</span>
       </div>
       <div class="detail-row">
-        <span class="label">Size</span>
+        <span class="label">Размер</span>
         <span class="value">${formatSize(b.size)}</span>
       </div>
       <div class="detail-row">
-        <span class="label">Weight</span>
+        <span class="label">Вес</span>
         <span class="value">${b.weight.toLocaleString()} WU</span>
       </div>
       <div class="detail-row">
-        <span class="label">Version</span>
+        <span class="label">Версия</span>
         <span class="value">${b.version}</span>
       </div>
       <div class="detail-row">
-        <span class="label">Merkle Root</span>
+        <span class="label">Корень Меркла</span>
         <span class="value">${shortHash(b.merkleRoot, 12)}</span>
       </div>
       <div class="detail-row">
@@ -136,25 +132,25 @@ function renderBlockDetail(b) {
         <span class="value">${b.nonce}</span>
       </div>
       <div class="detail-row">
-        <span class="label">Difficulty</span>
+        <span class="label">Сложность</span>
         <span class="value">${Number(b.difficulty).toExponential(2)}</span>
       </div>
       <div class="detail-row">
-        <span class="label">Previous Block</span>
+        <span class="label">Предыдущий блок</span>
         <span class="value">
           <span class="addr" onclick="loadBlock('${b.previousBlockHash}')">${shortHash(b.previousBlockHash, 10)}</span>
         </span>
       </div>
     </div>
     <div class="detail-card">
-      <h2>Transactions (first ${(b.txids || []).length})</h2>
-      ${txList || '<p class="muted">No transactions loaded</p>'}
+      <h2>Транзакции (первые ${(b.txids || []).length})</h2>
+      ${txList || '<p class="muted">Транзакции не загружены</p>'}
     </div>`;
 }
 
 async function loadTransaction(txid) {
   showView('tx-view');
-  $('#tx-view').innerHTML = '<div class="card">Loading...</div>';
+  $('#tx-view').innerHTML = '<div class="card">Загрузка...</div>';
   try {
     const tx = await api('/tx/' + txid);
     renderTxDetail(tx);
@@ -177,52 +173,52 @@ function renderTxDetail(tx) {
     </div>`).join('');
 
   const statusHtml = tx.confirmed
-    ? `<span class="confirmed">Confirmed (block #${tx.blockHeight})</span>`
-    : `<span class="unconfirmed">Unconfirmed (in mempool)</span>`;
+    ? `<span class="confirmed">Подтверждена (блок #${tx.blockHeight})</span>`
+    : `<span class="unconfirmed">Не подтверждена (в mempool)</span>`;
 
   $('#tx-view').innerHTML = `
-    <span class="back-btn" onclick="loadHome()">&larr; Back</span>
+    <span class="back-btn" onclick="loadHome()">&larr; Назад</span>
     <div class="detail-card">
-      <h2>Transaction</h2>
+      <h2>Транзакция</h2>
       <div class="detail-row">
         <span class="label">TXID</span>
         <span class="value">${tx.txid}</span>
       </div>
       <div class="detail-row">
-        <span class="label">Status</span>
+        <span class="label">Статус</span>
         <span class="value">${statusHtml}</span>
       </div>
       <div class="detail-row">
-        <span class="label">Size</span>
-        <span class="value">${tx.size} bytes</span>
+        <span class="label">Размер</span>
+        <span class="value">${tx.size} байт</span>
       </div>
       <div class="detail-row">
-        <span class="label">Weight</span>
+        <span class="label">Вес</span>
         <span class="value">${tx.weight} WU</span>
       </div>
       <div class="detail-row">
-        <span class="label">Fee</span>
+        <span class="label">Комиссия</span>
         <span class="value">${tx.fee.toLocaleString()} sat (${tx.feeBTC} BTC)</span>
       </div>
       <div class="detail-row">
-        <span class="label">Fee Rate</span>
+        <span class="label">Ставка комиссии</span>
         <span class="value">${tx.feeRate} sat/vB</span>
       </div>
       <div class="detail-row">
-        <span class="label">Total Input</span>
+        <span class="label">Сумма входов</span>
         <span class="value">${tx.totalInBTC} BTC</span>
       </div>
       <div class="detail-row">
-        <span class="label">Total Output</span>
+        <span class="label">Сумма выходов</span>
         <span class="value">${tx.totalOutBTC} BTC</span>
       </div>
     </div>
     <div class="detail-card io-section">
-      <h3>Inputs (${tx.inputs.length})</h3>
+      <h3>Входы (${tx.inputs.length})</h3>
       ${inputs}
     </div>
     <div class="detail-card io-section">
-      <h3>Outputs (${tx.outputs.length})</h3>
+      <h3>Выходы (${tx.outputs.length})</h3>
       ${outputs}
     </div>`;
 }
@@ -230,7 +226,7 @@ function renderTxDetail(tx) {
 async function loadAddress(address) {
   if (!address || address === 'null') return;
   showView('address-view');
-  $('#address-view').innerHTML = '<div class="card">Loading...</div>';
+  $('#address-view').innerHTML = '<div class="card">Загрузка...</div>';
   try {
     const addr = await api('/address/' + address);
     renderAddressDetail(addr);
@@ -244,38 +240,38 @@ function renderAddressDetail(addr) {
     <div class="tx-list-item" onclick="loadTransaction('${tx.txid}')">
       <span class="txid">${shortHash(tx.txid, 12)}</span>
       <span class="${tx.confirmed ? 'confirmed' : 'unconfirmed'}">
-        ${tx.confirmed ? 'Block #' + tx.blockHeight : 'Unconfirmed'}
+        ${tx.confirmed ? 'Блок #' + tx.blockHeight : 'Не подтверждена'}
       </span>
     </div>`).join('');
 
   $('#address-view').innerHTML = `
-    <span class="back-btn" onclick="loadHome()">&larr; Back</span>
+    <span class="back-btn" onclick="loadHome()">&larr; Назад</span>
     <div class="detail-card">
-      <h2>Address</h2>
+      <h2>Адрес</h2>
       <div class="detail-row">
-        <span class="label">Address</span>
+        <span class="label">Адрес</span>
         <span class="value">${addr.address}</span>
       </div>
       <div class="detail-row">
-        <span class="label">Balance</span>
+        <span class="label">Баланс</span>
         <span class="value">${addr.balanceBTC} BTC</span>
       </div>
       <div class="detail-row">
-        <span class="label">Total Received</span>
+        <span class="label">Всего получено</span>
         <span class="value">${addr.totalReceivedBTC} BTC</span>
       </div>
       <div class="detail-row">
-        <span class="label">Total Sent</span>
+        <span class="label">Всего отправлено</span>
         <span class="value">${addr.totalSentBTC} BTC</span>
       </div>
       <div class="detail-row">
-        <span class="label">Transactions</span>
+        <span class="label">Транзакций</span>
         <span class="value">${addr.txCount}</span>
       </div>
     </div>
     <div class="detail-card">
-      <h2>Recent Transactions (${addr.transactions.length})</h2>
-      ${txList || '<p class="muted">No transactions found</p>'}
+      <h2>Последние транзакции (${addr.transactions.length})</h2>
+      ${txList || '<p class="muted">Транзакции не найдены</p>'}
     </div>`;
 }
 
@@ -283,10 +279,10 @@ function renderError(msg) {
   showView('error-view');
   $('#error-view').innerHTML = `
     <div class="error-box">
-      <h2>Error</h2>
+      <h2>Ошибка</h2>
       <p>${msg}</p>
       <br>
-      <span class="back-btn" onclick="loadHome()">&larr; Back to Home</span>
+      <span class="back-btn" onclick="loadHome()">&larr; Вернуться на главную</span>
     </div>`;
 }
 
